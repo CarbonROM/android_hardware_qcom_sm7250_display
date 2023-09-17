@@ -13,6 +13,10 @@ ifeq ($(TARGET_USES_COLOR_METADATA), true)
     common_flags += -DUSE_COLOR_METADATA
 endif
 
+ifeq ($(TARGET_USES_5.4_KERNEL),true)
+    common_flags += -DKERNEL_5_4
+endif
+
 ifeq ($(TARGET_USES_QCOM_BSP),true)
     common_flags += -DQTI_BSP
 endif
@@ -39,7 +43,7 @@ ifeq ($(LLVM_SA), true)
     common_flags += --compile-and-analyze --analyzer-perf --analyzer-Werror
 endif
 
-common_includes := system/core/base/include
+common_includes := system/libbase/include
 CHECK_VERSION_LE = $(shell if [ $(1) -le $(2) ] ; then echo true ; else echo false ; fi)
 PLATFORM_SDK_NOUGAT = 25
 ifeq "REL" "$(PLATFORM_VERSION_CODENAME)"
@@ -75,4 +79,8 @@ ifeq ($(TARGET_COMPILE_WITH_MSM_KERNEL),true)
 # failing which, they are picked from bionic.
     common_deps += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
     kernel_includes += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
+ifeq ($(TARGET_USES_5.4_KERNEL), true)
+    kernel_includes += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include/display
+    kernel_includes += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include/vidc
+endif
 endif

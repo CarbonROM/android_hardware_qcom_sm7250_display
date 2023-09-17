@@ -3,6 +3,8 @@ include $(LOCAL_PATH)/../common.mk
 include $(CLEAR_VARS)
 
 LOCAL_MODULE                  := vendor.qti.hardware.display.composer-service
+LOCAL_LICENSE_KINDS           := SPDX-license-identifier-Apache-2.0 SPDX-license-identifier-BSD legacy_not_a_contribution
+LOCAL_LICENSE_CONDITIONS      := by_exception_only not_allowed notice
 LOCAL_SANITIZE                := integer_overflow
 LOCAL_VENDOR_MODULE           := true
 LOCAL_MODULE_RELATIVE_PATH    := hw
@@ -35,7 +37,7 @@ LOCAL_SHARED_LIBRARIES        := libhistogram libbinder libhardware libutils lib
                                  libdisplayconfig.qti \
                                  libdrm libthermalclient
 
-LOCAL_SHARED_LIBRARIES        += com.google.hardware.pixel.display-ndk_platform \
+LOCAL_SHARED_LIBRARIES        += com.google.hardware.pixel.display-V1-ndk_platform \
                                  libbinder_ndk \
                                  libbase
 
@@ -71,7 +73,11 @@ LOCAL_SRC_FILES               := QtiComposer.cpp QtiComposerClient.cpp service.c
 
 LOCAL_INIT_RC                 := vendor.qti.hardware.display.composer-service.rc
 ifneq ($(TARGET_HAS_LOW_RAM),true)
-LOCAL_VINTF_FRAGMENTS         := vendor.qti.hardware.display.composer-service.xml
+  ifeq ($(TARGET_BOARD_PLATFORM)$(TARGET_BOARD_SUFFIX),bengal_32)
+    LOCAL_VINTF_FRAGMENTS         := vendor.qti.hardware.display.composer-service-32bit.xml
+  else
+    LOCAL_VINTF_FRAGMENTS         := vendor.qti.hardware.display.composer-service.xml
+  endif
 else
 LOCAL_VINTF_FRAGMENTS         := vendor.qti.hardware.display.composer-service-low-ram.xml
 endif
